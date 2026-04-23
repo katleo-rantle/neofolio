@@ -1,73 +1,22 @@
-# React + TypeScript + Vite
+# KATLEO.DEV — Cyberpunk Developer Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A high-performance, interactive developer portfolio built with **React**, **TypeScript**, **Three.js**, and **GSAP**, featuring a futuristic HUD/cyberpunk aesthetic with dark and light theme support.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+### 🎨 Design & Theming
+- **Cyberpunk HUD Aesthetic** — Custom CSS variables power a cohesive sci-fi visual language with glowing borders, scanlines, chromatic aberration text, and holographic shimmer effects.
+- **Dark / Light Mode** — Full theme toggle with carefully tuned palettes for both modes. Persisted via `localStorage`.
+- **CRT & Scanline Effects** — Subtle CRT curvature, scanline overlays, and noise textures for an authentic retro-futuristic feel.
+- **Responsive Layout** — Mobile-first design with a sticky aside panel (profile + AI chat) that collapses on smaller screens.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🚀 Interactive Sections
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+#### Hero Section
+- Animated typing intro powered by GSAP `TextPlugin`
+- 3-layer chromatic aberration name effect
+- Live GitHub stats fetched from the GitHub API (repos, followers, latest activity)
+- Animated visit counter with easing
+- HUD status panel with simulated CPU/MEM/NET readouts

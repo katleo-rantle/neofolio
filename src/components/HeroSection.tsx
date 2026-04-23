@@ -2,17 +2,20 @@ import { useState, useRef, useLayoutEffect, useEffect } from 'react';
 import { developerProfile } from '../utils/developerData';
 
 import { FaEye, FaGithub, FaUsers, FaBookOpen } from 'react-icons/fa';
-import { FiActivity, FiAlertTriangle, FiChevronDown, FiGitCommit } from 'react-icons/fi';
+import {
+  FiActivity,
+  FiAlertTriangle,
+  FiChevronDown,
+  FiGitCommit,
+} from 'react-icons/fi';
 
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import { useVisitCounter } from '../hooks/useVisitCounter';
 import { useGitHubStats } from '../hooks/useGitHubStats';
-import { HUDDataReadout } from './HUDElements'
-
+import { HUDDataReadout } from './HUDElements';
 
 export function HeroSection() {
-
   const [showScroll, setShowScroll] = useState(true);
   const sectionRef = useRef<HTMLElement>(null);
   const { displayVisits } = useVisitCounter();
@@ -187,7 +190,6 @@ export function HeroSection() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-
   return (
     <section
       id='hero-section'
@@ -308,105 +310,107 @@ export function HeroSection() {
             </span>
           </div>
         </h1>
+        {/* Bio + GitHub Row */}
+        <div className='flex flex-col md:flex-row gap-6 mb-12'>
+          <div className='hero-bio-container relative p-6 flex-1 bg-hud-surface/30 backdrop-blur-md border-l-4 border-hud-primary clip-angled-br'>
+            <div className='absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-hud-primary/30'></div>
+            <div className='absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-hud-primary/30'></div>
+            <h2 className='text-2xl sm:text-3xl font-body font-bold text-hud-primary mb-4 flex items-center gap-2'>
+              <span className='w-2 h-2 bg-hud-accent animate-pulse'></span>
+              <span className='hero-title-text'>{developerProfile.title}</span>
+            </h2>
+            <p className='hero-bio-text text-lg text-hud-text leading-relaxed font-body min-h-[80px]'>
+              {developerProfile.bio}
+            </p>
+          </div>
 
-        <div className='hero-bio-container relative p-6 mb-12 max-w-2xl bg-hud-surface/30 backdrop-blur-md border-l-4 border-hud-primary clip-angled-br'>
-          <div className='absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-hud-primary/30'></div>
-          <div className='absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-hud-primary/30'></div>
-          <h2 className='text-2xl sm:text-3xl font-body font-bold text-hud-primary mb-4 flex items-center gap-2'>
-            <span className='w-2 h-2 bg-hud-accent animate-pulse'></span>
-            <span className='hero-title-text'>{developerProfile.title}</span>
-          </h2>
-          <p className='hero-bio-text text-lg text-hud-text leading-relaxed font-body min-h-[80px]'>
-            {developerProfile.bio}
-          </p>
-        </div>
+          <div className='hero-gh-panel flex-1 relative group'>
+            <div className='absolute -inset-1 bg-gradient-to-r from-hud-primary to-hud-accent opacity-20 blur group-hover:opacity-40 transition duration-1000'></div>
+            <div className='hud-bg-surface border border-hud-border clip-notched p-5 relative overflow-hidden h-full'>
+              <div className='holo-shimmer opacity-50'></div>
+              <div className='absolute top-0 left-0 w-full h-[2px] bg-hud-primary animate-[scan-line_3s_linear_infinite]'></div>
 
-        <div className='hero-gh-panel mb-12 max-w-2xl relative group'>
-          <div className='absolute -inset-1 bg-gradient-to-r from-hud-primary to-hud-accent opacity-20 blur group-hover:opacity-40 transition duration-1000'></div>
-          <div className='hud-bg-surface border border-hud-border clip-notched p-5 relative overflow-hidden'>
-            <div className='holo-shimmer opacity-50'></div>
-            <div className='absolute top-0 left-0 w-full h-[2px] bg-hud-primary animate-[scan-line_3s_linear_infinite]'></div>
-
-            <div className='flex items-center gap-2 mb-4 border-b border-hud-border/50 pb-3 relative z-10'>
-              <FaGithub className='w-5 h-5 text-hud-primary' />
-              <h3 className='font-mono text-sm font-bold text-hud-text tracking-wider'>
-                GITHUB.TERMINAL // {developerProfile.name}
-              </h3>
-              {ghLoading && (
-                <span className='ml-auto flex gap-1'>
-                  <span className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'></span>
-                  <span
-                    className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
-                    style={{
-                      animationDelay: '150ms',
-                    }}
-                  ></span>
-                  <span
-                    className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
-                    style={{
-                      animationDelay: '300ms',
-                    }}
-                  ></span>
-                </span>
-              )}
-            </div>
-
-            {ghError ? (
-              <div className='flex items-center gap-2 text-hud-warning font-mono text-xs py-2 relative z-10'>
-                <FiAlertTriangle className='w-4 h-4' />
-                CONNECTION FAILED: {ghError}
+              <div className='flex items-center gap-2 mb-4 border-b border-hud-border/50 pb-3 relative z-10'>
+                <FaGithub className='w-5 h-5 text-hud-primary' />
+                <h3 className='font-mono text-sm font-bold text-hud-text tracking-wider'>
+                  GITHUB.TERMINAL // Katleo-Rantle
+                </h3>
+                {ghLoading && (
+                  <span className='ml-auto flex gap-1'>
+                    <span className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'></span>
+                    <span
+                      className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
+                      style={{
+                        animationDelay: '150ms',
+                      }}
+                    ></span>
+                    <span
+                      className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
+                      style={{
+                        animationDelay: '300ms',
+                      }}
+                    ></span>
+                  </span>
+                )}
               </div>
-            ) : ghStats ? (
-              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs relative z-10'>
-                <div className='space-y-3'>
-                  <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
-                    <FaBookOpen className='w-4 h-4 text-hud-primary' />
-                    <span>
-                      PUBLIC_REPOS:{' '}
-                      <span className='text-hud-text font-bold'>
-                        {ghStats.publicRepos}
-                      </span>
-                    </span>
-                  </div>
-                  <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
-                    <FaUsers className='w-4 h-4 text-hud-primary' />
-                    <span>
-                      FOLLOWERS:{' '}
-                      <span className='text-hud-text font-bold'>
-                        {ghStats.followers}
-                      </span>
-                    </span>
-                  </div>
+
+              {ghError ? (
+                <div className='flex items-center gap-2 text-hud-warning font-mono text-xs py-2 relative z-10'>
+                  <FiAlertTriangle className='w-4 h-4' />
+                  CONNECTION FAILED: {ghError}
                 </div>
-                <div className='space-y-3'>
-                  {ghStats.latestRepo && (
+              ) : ghStats ? (
+                <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs relative z-10'>
+                  <div className='space-y-3'>
                     <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
-                      <FiActivity className='w-4 h-4 text-hud-accent' />
-                      <span className='truncate'>
-                        LATEST:{' '}
-                        <span className='text-hud-text'>
-                          {ghStats.latestRepo.name}
+                      <FaBookOpen className='w-4 h-4 text-hud-primary' />
+                      <span>
+                        PUBLIC_REPOS:{' '}
+                        <span className='text-hud-text font-bold'>
+                          {ghStats.publicRepos}
                         </span>
                       </span>
                     </div>
-                  )}
-                  {ghStats.latestActivity && (
                     <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
-                      <FiGitCommit className='w-4 h-4 text-hud-accent' />
-                      <span className='truncate'>
-                        ACT:{' '}
-                        <span className='text-hud-text'>
-                          {ghStats.latestActivity.type}
-                        </span>{' '}
-                        ({ghStats.latestActivity.timeAgo})
+                      <FaUsers className='w-4 h-4 text-hud-primary' />
+                      <span>
+                        FOLLOWERS:{' '}
+                        <span className='text-hud-text font-bold'>
+                          {ghStats.followers}
+                        </span>
                       </span>
                     </div>
-                  )}
+                  </div>
+                  <div className='space-y-3'>
+                    {ghStats.latestRepo && (
+                      <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
+                        <FiActivity className='w-4 h-4 text-hud-accent' />
+                        <span className='truncate'>
+                          LATEST:{' '}
+                          <span className='text-hud-text'>
+                            {ghStats.latestRepo.name}
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                    {ghStats.latestActivity && (
+                      <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
+                        <FiGitCommit className='w-4 h-4 text-hud-accent' />
+                        <span className='truncate'>
+                          ACT:{' '}
+                          <span className='text-hud-text'>
+                            {ghStats.latestActivity.type}
+                          </span>{' '}
+                          ({ghStats.latestActivity.timeAgo})
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className='h-16'></div>
-            )}
+              ) : (
+                <div className='h-16'></div>
+              )}
+            </div>
           </div>
         </div>
 
