@@ -1,0 +1,448 @@
+import { useState, useRef, useLayoutEffect, useEffect } from 'react';
+import { developerProfile } from '../utils/developerData';
+
+import { FaEye, FaGithub, FaUsers, FaBookOpen } from 'react-icons/fa';
+import { FiActivity, FiAlertTriangle, FiChevronDown, FiGitCommit } from 'react-icons/fi';
+
+import { gsap } from 'gsap';
+import { TextPlugin } from 'gsap/TextPlugin';
+import { useVisitCounter } from '../hooks/useVisitCounter';
+import { useGitHubStats } from '../hooks/useGitHubStats';
+import { HUDDataReadout } from './HUDElements'
+
+
+export function HeroSection() {
+
+  const [showScroll, setShowScroll] = useState(true);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { displayVisits } = useVisitCounter();
+  const {
+    stats: ghStats,
+    isLoading: ghLoading,
+    error: ghError,
+  } = useGitHubStats('katleo-rantle');
+
+  useLayoutEffect(() => {
+    gsap.registerPlugin(TextPlugin);
+    const ctx = gsap.context(() => {
+      // Random glitch effect on name
+      const glitchInterval = setInterval(() => {
+        const nameEls = document.querySelectorAll('.hero-name-layer');
+        nameEls.forEach((el) => {
+          el.classList.add('animate-ping');
+          setTimeout(() => el.classList.remove('animate-ping'), 200);
+        });
+      }, 4000);
+
+      // Store original texts
+      const greetingEl = document.querySelector('.hero-greeting');
+      const nameEls = document.querySelectorAll('.hero-name-text');
+      const titleEl = document.querySelector('.hero-title-text');
+      const bioEl = document.querySelector('.hero-bio-text');
+      const greetingText = greetingEl?.textContent || '> INITIATING_USER:';
+      const nameText = developerProfile.name;
+      const titleText = developerProfile.title;
+      const bioText = developerProfile.bio;
+      // Clear texts initially
+      if (greetingEl) greetingEl.textContent = '';
+      nameEls.forEach((el) => (el.textContent = ''));
+      if (titleEl) titleEl.textContent = '';
+      if (bioEl) bioEl.textContent = '';
+      const tl = gsap.timeline({
+        delay: 0.5,
+      });
+      tl.fromTo(
+        '.hero-status-panel',
+        {
+          opacity: 0,
+          x: -50,
+          clipPath: 'polygon(0 0, 0 0, 0 100%, 0 100%)',
+        },
+        {
+          opacity: 1,
+          x: 0,
+          clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+          duration: 0.8,
+          ease: 'power3.out',
+        },
+      )
+        .to('.hero-greeting', {
+          text: greetingText,
+          duration: 0.5,
+          ease: 'none',
+        })
+        .fromTo(
+          '.hero-name-container',
+          {
+            opacity: 0,
+            scale: 0.9,
+            filter: 'blur(10px)',
+          },
+          {
+            opacity: 1,
+            scale: 1,
+            filter: 'blur(0px)',
+            duration: 0.4,
+            ease: 'back.out(1.5)',
+          },
+        )
+        .to('.hero-name-text', {
+          text: nameText,
+          duration: 0.8,
+          ease: 'none',
+        })
+        .fromTo(
+          '.hero-bio-container',
+          {
+            opacity: 0,
+            y: 20,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+          },
+        )
+        .to('.hero-title-text', {
+          text: titleText,
+          duration: 0.6,
+          ease: 'none',
+        })
+        .to('.hero-bio-text', {
+          text: bioText,
+          duration: 1.5,
+          ease: 'none',
+        })
+        .fromTo(
+          '.hero-gh-panel',
+          {
+            opacity: 0,
+            y: 40,
+            rotationX: -15,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            rotationX: 0,
+            duration: 0.8,
+            ease: 'power3.out',
+          },
+          '-=0.4',
+        )
+        .fromTo(
+          '.hero-cta',
+          {
+            opacity: 0,
+            scale: 0.8,
+          },
+          {
+            opacity: 1,
+            scale: 1,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: 'back.out(2)',
+          },
+          '-=0.2',
+        )
+        .fromTo(
+          '.hero-scroll',
+          {
+            opacity: 0,
+            y: -20,
+          },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+          },
+          '-=0.1',
+        );
+      return () => clearInterval(glitchInterval);
+    }, sectionRef);
+    return () => ctx.revert();
+  }, []);
+  // Generate random data fragments
+  const dataFragments = Array.from({
+    length: 20,
+  }).map((_, i) => ({
+    id: i,
+    text:
+      i % 3 === 0
+        ? `0x${Math.floor(Math.random() * 16777215)
+            .toString(16)
+            .toUpperCase()}`
+        : i % 3 === 1
+          ? `SYS.CALL(${Math.floor(Math.random() * 100)})`
+          : Math.random().toString(2).substring(2, 10),
+    left: `${Math.random() * 100}%`,
+    top: `${Math.random() * 100}%`,
+    duration: 15 + Math.random() * 20,
+    delay: Math.random() * 5,
+  }));
+
+  // scroll arrow
+  useEffect(() => {
+    const handleScroll = () => setShowScroll(window.scrollY < 100);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
+  return (
+    <section
+      id='hero-section'
+      ref={sectionRef}
+      className='relative min-h-screen flex items-center pt-24 px-4 sm:px-6 lg:px-8 overflow-hidden'
+    >
+      {/* Layered Background */}
+      <div className='absolute inset-0 overflow-hidden pointer-events-none z-0'>
+        <div className='absolute inset-0 circuit-bg opacity-10'></div>
+        <div className='absolute -bottom-48 -right-48 w-[800px] h-[800px] radar-sweep opacity-20'></div>
+
+        {/* Pulse Rings */}
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-hud-primary/50 animate-[pulse-ring_4s_infinite]'></div>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-hud-accent/30 animate-[pulse-ring_4s_infinite_2s]'></div>
+
+        {/* Floating Data Fragments */}
+        {dataFragments.map((frag) => (
+          <div
+            key={frag.id}
+            className='absolute font-mono text-[10px] text-hud-primary opacity-30 animate-float mix-blend-screen'
+            style={{
+              left: frag.left,
+              top: frag.top,
+              animationDuration: `${frag.duration}s`,
+              animationDelay: `${frag.delay}s`,
+            }}
+          >
+            {frag.text}
+          </div>
+        ))}
+      </div>
+
+      <div className='max-w-5xl mx-auto w-full z-10 relative'>
+        {/* Complex HUD Status Panel */}
+        <div className='hero-status-panel flex flex-wrap gap-4 mb-8 font-mono text-xs'>
+          <div className='flex items-center gap-3 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled'>
+            <div className='w-8 h-8 border border-hud-primary/50 relative flex items-center justify-center bg-hud-primary/10'>
+              <div className='absolute inset-0 circuit-bg opacity-30'></div>
+              <div className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-ping'></div>
+            </div>
+            <div>
+              <div className='text-hud-text-muted'>LOCATION_SYNC</div>
+              <div className='text-hud-primary'>
+                {developerProfile.location}
+              </div>
+            </div>
+          </div>
+
+          <div className='flex items-center gap-4 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled flex-1 min-w-[250px]'>
+            <div className='flex-1'>
+              <div className='flex justify-between text-hud-text-muted mb-1'>
+                <span>CPU</span>
+                <HUDDataReadout label='' length={2} updateInterval={800} />%
+              </div>
+              <div className='h-1 bg-hud-border/30 w-full'>
+                <div className='h-full bg-hud-primary w-[45%] animate-pulse'></div>
+              </div>
+            </div>
+            <div className='flex-1'>
+              <div className='flex justify-between text-hud-text-muted mb-1'>
+                <span>MEM</span>
+                <HUDDataReadout label='' length={2} updateInterval={1200} />%
+              </div>
+              <div className='h-1 bg-hud-border/30 w-full'>
+                <div className='h-full bg-hud-accent w-[72%] animate-pulse'></div>
+              </div>
+            </div>
+            <div className='flex-1'>
+              <div className='flex justify-between text-hud-text-muted mb-1'>
+                <span>NET</span>
+                <HUDDataReadout label='' length={2} updateInterval={400} />
+              </div>
+              <div className='h-1 bg-hud-border/30 w-full'>
+                <div className='h-full bg-hud-success w-[88%] animate-pulse'></div>
+              </div>
+            </div>
+          </div>
+
+          <div className='flex items-center gap-3 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled'>
+            <FaEye className='w-4 h-4 text-hud-primary' />
+            <div>
+              <div className='text-hud-text-muted'>VISIT_LOG</div>
+              <div className='text-hud-primary font-bold tracking-widest'>
+                {String(displayVisits).padStart(6, '0')}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h1 className='text-3xl sm:text-7xl md:text-8xl font-heading font-black tracking-tighter mb-6 uppercase relative z-10'>
+          <span className='hero-greeting block text-hud-text-muted text-xl sm:text-2xl mb-2 tracking-widest'>
+            &gt; INITIATING_USER:
+          </span>
+          {/* 3-Layer Chromatic Aberration Name */}
+          {/* <div className='hero-name-container relative inline-block'>
+            <span className='hero-name-layer hero-name-text absolute inset-0 text-cyan-500 translate-x-[-3px] mix-blend-screen opacity-70'>
+              {developerProfile.name}
+            </span>
+            <span className='hero-name-layer hero-name-text absolute inset-0 text-fuchsia-500 translate-x-[3px] mix-blend-screen opacity-70'>
+              {developerProfile.name}
+            </span>
+            <span className='relative text-hud-text drop-shadow-[0_0_15px_var(--hud-glow)] hero-name-text'>
+              {developerProfile.name}
+            </span>
+          </div> */}
+          <div className='hero-name-container relative inline-block font-heading text-4xl sm:text-6xl uppercase tracking-tighter'>
+            {/* Base Layer */}
+            <span className='relative z-10 text-hud-text'>
+              {developerProfile.name}
+            </span>
+
+            {/* Glitch Slices */}
+            <span className='glitch-layer glitch-top text-cyan-500'>
+              {developerProfile.name}
+            </span>
+            <span className='glitch-layer glitch-bottom text-fuchsia-500'>
+              {developerProfile.name}
+            </span>
+          </div>
+        </h1>
+
+        <div className='hero-bio-container relative p-6 mb-12 max-w-2xl bg-hud-surface/30 backdrop-blur-md border-l-4 border-hud-primary clip-angled-br'>
+          <div className='absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-hud-primary/30'></div>
+          <div className='absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-hud-primary/30'></div>
+          <h2 className='text-2xl sm:text-3xl font-body font-bold text-hud-primary mb-4 flex items-center gap-2'>
+            <span className='w-2 h-2 bg-hud-accent animate-pulse'></span>
+            <span className='hero-title-text'>{developerProfile.title}</span>
+          </h2>
+          <p className='hero-bio-text text-lg text-hud-text leading-relaxed font-body min-h-[80px]'>
+            {developerProfile.bio}
+          </p>
+        </div>
+
+        <div className='hero-gh-panel mb-12 max-w-2xl relative group'>
+          <div className='absolute -inset-1 bg-gradient-to-r from-hud-primary to-hud-accent opacity-20 blur group-hover:opacity-40 transition duration-1000'></div>
+          <div className='hud-bg-surface border border-hud-border clip-notched p-5 relative overflow-hidden'>
+            <div className='holo-shimmer opacity-50'></div>
+            <div className='absolute top-0 left-0 w-full h-[2px] bg-hud-primary animate-[scan-line_3s_linear_infinite]'></div>
+
+            <div className='flex items-center gap-2 mb-4 border-b border-hud-border/50 pb-3 relative z-10'>
+              <FaGithub className='w-5 h-5 text-hud-primary' />
+              <h3 className='font-mono text-sm font-bold text-hud-text tracking-wider'>
+                GITHUB.TERMINAL // {developerProfile.name}
+              </h3>
+              {ghLoading && (
+                <span className='ml-auto flex gap-1'>
+                  <span className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'></span>
+                  <span
+                    className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
+                    style={{
+                      animationDelay: '150ms',
+                    }}
+                  ></span>
+                  <span
+                    className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
+                    style={{
+                      animationDelay: '300ms',
+                    }}
+                  ></span>
+                </span>
+              )}
+            </div>
+
+            {ghError ? (
+              <div className='flex items-center gap-2 text-hud-warning font-mono text-xs py-2 relative z-10'>
+                <FiAlertTriangle className='w-4 h-4' />
+                CONNECTION FAILED: {ghError}
+              </div>
+            ) : ghStats ? (
+              <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 font-mono text-xs relative z-10'>
+                <div className='space-y-3'>
+                  <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
+                    <FaBookOpen className='w-4 h-4 text-hud-primary' />
+                    <span>
+                      PUBLIC_REPOS:{' '}
+                      <span className='text-hud-text font-bold'>
+                        {ghStats.publicRepos}
+                      </span>
+                    </span>
+                  </div>
+                  <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
+                    <FaUsers className='w-4 h-4 text-hud-primary' />
+                    <span>
+                      FOLLOWERS:{' '}
+                      <span className='text-hud-text font-bold'>
+                        {ghStats.followers}
+                      </span>
+                    </span>
+                  </div>
+                </div>
+                <div className='space-y-3'>
+                  {ghStats.latestRepo && (
+                    <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
+                      <FiActivity className='w-4 h-4 text-hud-accent' />
+                      <span className='truncate'>
+                        LATEST:{' '}
+                        <span className='text-hud-text'>
+                          {ghStats.latestRepo.name}
+                        </span>
+                      </span>
+                    </div>
+                  )}
+                  {ghStats.latestActivity && (
+                    <div className='flex items-center gap-3 text-hud-text-muted bg-hud-bg/50 p-2 border border-hud-border/30'>
+                      <FiGitCommit className='w-4 h-4 text-hud-accent' />
+                      <span className='truncate'>
+                        ACT:{' '}
+                        <span className='text-hud-text'>
+                          {ghStats.latestActivity.type}
+                        </span>{' '}
+                        ({ghStats.latestActivity.timeAgo})
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className='h-16'></div>
+            )}
+          </div>
+        </div>
+
+        <div className='flex flex-wrap gap-4 relative z-10'>
+          <a
+            href='#projects'
+            className='hero-cta relative overflow-hidden px-8 py-4 bg-hud-primary text-hud-bg font-heading font-bold tracking-widest hover:bg-hud-accent transition-colors clip-notched shadow-[0_0_15px_var(--hud-primary)] group'
+          >
+            <div className='absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12'></div>
+            INITIATE_VIEW
+          </a>
+          <a
+            href={developerProfile.socialLinks.github}
+            target='_blank'
+            rel='noreferrer'
+            className='hero-cta relative overflow-hidden px-8 py-4 border border-hud-primary text-hud-primary font-heading font-bold tracking-widest hover:bg-hud-primary hover:text-hud-bg transition-colors clip-notched group'
+          >
+            <div className='absolute inset-0 bg-hud-primary/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-12'></div>
+            GITHUB.EXE
+          </a>
+        </div>
+      </div>
+
+      {/* <div className='hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2'>
+        <div className='font-mono text-[10px] text-hud-primary tracking-widest animate-pulse'>
+          SCROLL_DOWN
+        </div>
+        <div className='w-6 h-10 border-2 border-hud-primary clip-angled flex justify-center p-1'>
+          <div className='w-1 h-2 bg-hud-accent animate-[scan-line_1.5s_linear_infinite]'></div>
+        </div>
+      </div> */}
+      {showScroll && (
+        <div className='hero-scroll absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-0'>
+          <FiChevronDown className='w-8 h-8 text-hud-primary opacity-50' />
+        </div>
+      )}
+    </section>
+  );
+}
