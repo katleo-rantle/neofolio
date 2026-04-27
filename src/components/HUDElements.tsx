@@ -223,7 +223,10 @@ const BiometricFaceGlyph = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export const BiometricScanContainer = () => {
+export const BiometricScanContainer = ({ paused }: { paused: boolean }) => {
+  // Create a ref to store the timeline so we can access it outside useGSAP
+  const tlRef = useRef<gsap.core.Timeline | null>(null);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const glyphRef = useRef<HTMLDivElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
@@ -234,7 +237,8 @@ export const BiometricScanContainer = () => {
   // useGSAP handles safe cleanup on unmount automatically
   useGSAP(
     () => {
-      const tl = gsap.timeline({
+      tlRef.current = gsap.timeline({
+        paused: true, // Start paused, we'll control when it plays
         repeat: 0, // Run once
         delay: 1, // Wait for other loading elements
         onComplete: () => setIsComplete(true),
@@ -242,13 +246,14 @@ export const BiometricScanContainer = () => {
 
       // Initial state setup
       gsap.set(successRef.current, { opacity: 0, scale: 0.5 });
-      
+      gsap.set(glyphRef.current, { scale: 0.5 });
+
       // --- Phase 1: Scan Line Animation ---
       // We animate the 'Scan Line' itself, which is a transparent gradient div
-      tl.set(textRef.current, { text: scanMessages[0], opacity: 1 });
-      tl.to('.scan-line', {
+      tlRef.current.set(textRef.current, { text: scanMessages[0], opacity: 1 });
+      tlRef.current.to('.scan-line', {
         y: '15000%', // Move from top to bottom
-        duration: 2,
+        duration: 1,
         ease: 'power2.inOut',
         repeat: 1, // Run back and forth twice
         yoyo: true, // Reverse animation
@@ -257,18 +262,19 @@ export const BiometricScanContainer = () => {
           gsap.set('.scan-line', { opacity: 0 });
         },
       });
-      tl.to(
-        textRef.current,
-        {
-          text: {
-            value: `${currentText}<br/>${scanMessages[1]}`,
-            delimiter: '',
+      tlRef.current
+        .to(
+          textRef.current,
+          {
+            text: {
+              value: `${currentText}<br/>${scanMessages[1]}`,
+              delimiter: '',
+            },
+            duration: 1,
+            ease: 'none',
           },
-          duration: 1,
-          ease: 'none',
-        },
-        0.5,
-      )
+          0.5,
+        )
         .to(
           textRef.current,
           {
@@ -292,21 +298,21 @@ export const BiometricScanContainer = () => {
         ); // Happens after the messages finish displaying
       // --- Phase 2: MATCH Pulse ---
       // Occurs when scan-line finishes its yoyo
-      tl.to(
+      tlRef.current.to(
         glyphRef.current,
         {
-          scale: 1.25,
+          scale: 0.75,
           filter: 'brightness(1.5) drop-shadow(0 0 15px var(--hud-glow))',
           color: 'var(--hud-success)', // Use your success variable
-          duration: 0.4,
-          ease: 'power4.out',
+          duration: 0.1,
+          ease: 'back.in',
         },
-        '+=1',
+        '+=0.5',
       ); // Small offset after scan
 
       // --- Phase 3: Transition to Circle with Tick ---
       // Fade out the Glyph
-      tl.to(
+      tlRef.current.to(
         glyphRef.current,
         {
           opacity: 0,
@@ -319,6 +325,17 @@ export const BiometricScanContainer = () => {
     },
     { scope: containerRef },
   ); // Context scoping
+
+  // WATCHER: This reacts whenever the 'paused' prop changes
+  useEffect(() => {
+    if (tlRef.current) {
+      if (paused) {
+        tlRef.current.pause();
+      } else {
+        tlRef.current.play();
+      }
+    }
+  }, [paused]);
 
   return (
     <div
@@ -354,10 +371,8 @@ export const BiometricScanContainer = () => {
         <div
           ref={textRef}
           className='font-mono text-s uppercase tracking-widest text-hud-accent'
-        >
-          
-        </div>
+        ></div>
       </div>
     </div>
   );
-};
+};;;

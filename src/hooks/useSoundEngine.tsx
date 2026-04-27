@@ -9,11 +9,13 @@ import React, {
 interface SoundEngineContextType {
   isSoundEnabled: boolean;
   toggleSound: () => void;
+  enableSound: (enabled: boolean) => void;
   playHover: () => void;
   playClick: () => void;
   playBootSequence: () => void;
   playTransition: () => void;
   playTypingTick: () => void;
+  playEngageSound: () => void;
 }
 const SoundEngineContext = createContext<SoundEngineContextType | null>(null);
 export const useSoundEngine = () => {
@@ -115,16 +117,21 @@ export const SoundProvider: React.FC<{
       return next;
     });
   };
+  const enableSound = useCallback((enabled: boolean) => {
+    setIsSoundEnabled(enabled);
+    localStorage.setItem('site_sounds', String(enabled));
+  }, []);
   const playHover = useCallback(() => {
     if (!isSoundEnabled || !audioCtxRef.current) return;
     const ctx = audioCtxRef.current;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
+    // Sci-fi hover: quick high-pitched chirp
     osc.type = 'sine';
-    osc.frequency.setValueAtTime(800, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.05);
+    osc.frequency.setValueAtTime(1200, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(2000, ctx.currentTime + 0.05);
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.02, ctx.currentTime + 0.01);
+    gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.01);
     gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
     osc.connect(gain);
     gain.connect(ctx.destination);
@@ -136,16 +143,17 @@ export const SoundProvider: React.FC<{
     const ctx = audioCtxRef.current;
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
+    // Sci-fi click: sharp metallic tick
     osc.type = 'square';
-    osc.frequency.setValueAtTime(400, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+    osc.frequency.setValueAtTime(800, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.08);
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.01);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
     osc.connect(gain);
     gain.connect(ctx.destination);
     osc.start();
-    osc.stop(ctx.currentTime + 0.1);
+    osc.stop(ctx.currentTime + 0.08);
   }, [isSoundEnabled]);
   const playTransition = useCallback(() => {
     if (!isSoundEnabled || !audioCtxRef.current) return;
@@ -153,39 +161,40 @@ export const SoundProvider: React.FC<{
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
+    // Warp/whoosh transition
     osc.type = 'sawtooth';
-    osc.frequency.setValueAtTime(100, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 0.3);
+    osc.frequency.setValueAtTime(50, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.4);
     filter.type = 'lowpass';
-    filter.frequency.setValueAtTime(200, ctx.currentTime);
-    filter.frequency.exponentialRampToValueAtTime(2000, ctx.currentTime + 0.3);
+    filter.frequency.setValueAtTime(100, ctx.currentTime);
+    filter.frequency.exponentialRampToValueAtTime(3000, ctx.currentTime + 0.4);
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 0.1);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    gain.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(ctx.destination);
     osc.start();
-    osc.stop(ctx.currentTime + 0.3);
+    osc.stop(ctx.currentTime + 0.4);
   }, [isSoundEnabled]);
   const playBootSequence = useCallback(() => {
     if (!isSoundEnabled || !audioCtxRef.current) return;
     const ctx = audioCtxRef.current;
-    // Fast typing/processing sound
+    // Complex startup sequence
     let time = ctx.currentTime;
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 20; i++) {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = 'square';
-      osc.frequency.value = 1000 + Math.random() * 2000;
+      osc.type = i % 2 === 0 ? 'square' : 'sawtooth';
+      osc.frequency.value = 800 + Math.random() * 3000;
       gain.gain.setValueAtTime(0, time);
-      gain.gain.linearRampToValueAtTime(0.02, time + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.05);
+      gain.gain.linearRampToValueAtTime(0.03, time + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, time + 0.06);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start(time);
-      osc.stop(time + 0.05);
-      time += 0.05 + Math.random() * 0.05;
+      osc.stop(time + 0.06);
+      time += 0.03 + Math.random() * 0.04;
     }
   }, [isSoundEnabled]);
   const playTypingTick = useCallback(() => {
@@ -194,29 +203,81 @@ export const SoundProvider: React.FC<{
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     const filter = ctx.createBiquadFilter();
+    // High-tech data processing tick
     osc.type = 'square';
-    osc.frequency.value = 600 + Math.random() * 400;
+    osc.frequency.value = 1200 + Math.random() * 800;
     filter.type = 'highpass';
-    filter.frequency.value = 800;
+    filter.frequency.value = 1000;
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 0.005);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+    gain.gain.linearRampToValueAtTime(0.04, ctx.currentTime + 0.005);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
     osc.connect(filter);
     filter.connect(gain);
     gain.connect(ctx.destination);
     osc.start();
-    osc.stop(ctx.currentTime + 0.03);
+    osc.stop(ctx.currentTime + 0.02);
+  }, [isSoundEnabled]);
+  const playEngageSound = useCallback(() => {
+    if (!isSoundEnabled || !audioCtxRef.current) return;
+    const ctx = audioCtxRef.current;
+    // Low rumble sweeping up
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(60, ctx.currentTime);
+    osc1.frequency.exponentialRampToValueAtTime(400, ctx.currentTime + 1.5);
+    gain1.gain.setValueAtTime(0, ctx.currentTime);
+    gain1.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 0.5);
+    gain1.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start();
+    osc1.stop(ctx.currentTime + 1.5);
+    // Mid-range sweep
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = 'sawtooth';
+    osc2.frequency.setValueAtTime(100, ctx.currentTime);
+    osc2.frequency.exponentialRampToValueAtTime(800, ctx.currentTime + 1.2);
+    gain2.gain.setValueAtTime(0, ctx.currentTime);
+    gain2.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.3);
+    gain2.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.2);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start();
+    osc2.stop(ctx.currentTime + 1.2);
+    // High-pitched confirmation ping at the end
+    setTimeout(() => {
+      if (!audioCtxRef.current) return;
+      const pingOsc = ctx.createOscillator();
+      const pingGain = ctx.createGain();
+      pingOsc.type = 'sine';
+      pingOsc.frequency.setValueAtTime(2000, ctx.currentTime);
+      pingOsc.frequency.exponentialRampToValueAtTime(
+        3000,
+        ctx.currentTime + 0.3,
+      );
+      pingGain.gain.setValueAtTime(0, ctx.currentTime);
+      pingGain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 0.05);
+      pingGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+      pingOsc.connect(pingGain);
+      pingGain.connect(ctx.destination);
+      pingOsc.start();
+      pingOsc.stop(ctx.currentTime + 0.3);
+    }, 800);
   }, [isSoundEnabled]);
   return (
     <SoundEngineContext.Provider
       value={{
         isSoundEnabled,
         toggleSound,
+        enableSound,
         playHover,
         playClick,
         playBootSequence,
         playTransition,
         playTypingTick,
+        playEngageSound,
       }}
     >
       {children}

@@ -5,9 +5,8 @@ import App from './App.tsx';
 import { SoundProvider } from './hooks/useSoundEngine.tsx';
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
     <SoundProvider>
       <App />
     </SoundProvider>
-  </StrictMode>,
+  
 );

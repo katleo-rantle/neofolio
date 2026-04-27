@@ -38,6 +38,7 @@ export function HeroSection() {
       }, 4000);
 
       // Store original texts
+      const devName = document.querySelectorAll('.dev-name');
       const greetingEl = document.querySelector('.hero-greeting');
       const nameEls = document.querySelectorAll('.hero-name-text');
       const titleEl = document.querySelector('.hero-title-text');
@@ -284,35 +285,24 @@ export function HeroSection() {
             &gt; INITIATING_USER:
           </span>
           {/* 3-Layer Chromatic Aberration Name */}
-          {/* <div className='hero-name-container relative inline-block'>
-            <span className='hero-name-layer hero-name-text absolute inset-0 text-cyan-500 translate-x-[-3px] mix-blend-screen opacity-70'>
-              {developerProfile.name}
-            </span>
-            <span className='hero-name-layer hero-name-text absolute inset-0 text-fuchsia-500 translate-x-[3px] mix-blend-screen opacity-70'>
-              {developerProfile.name}
-            </span>
-            <span className='relative text-hud-text drop-shadow-[0_0_15px_var(--hud-glow)] hero-name-text'>
-              {developerProfile.name}
-            </span>
-          </div> */}
-          <div className='hero-name-container relative inline-block font-heading text-4xl sm:text-6xl uppercase tracking-tighter'>
-            {/* Base Layer */}
-            <span className='relative z-10 text-hud-text'>
-              {developerProfile.name}
-            </span>
 
-            {/* Glitch Slices */}
-            <span className='glitch-layer glitch-top text-cyan-500'>
+          <div className='hero-name-container relative inline-block font-heading-2 text-4xl sm:text-6xl uppercase tracking-tighter'>
+            {/* Base Layer */}
+            <span className='relative z-10 text-hud-text hero-name-text'>
               {developerProfile.name}
             </span>
-            <span className='glitch-layer glitch-bottom text-fuchsia-500'>
+            {/* Glitch Slices */}
+            <span className='glitch-layer glitch-top text-cyan-500 hero-name-text'>
+              {developerProfile.name}
+            </span>
+            <span className='glitch-layer glitch-bottom text-fuchsia-500 hero-name-text'>
               {developerProfile.name}
             </span>
           </div>
         </h1>
         {/* Bio + GitHub Row */}
         <div className='flex flex-col md:flex-row gap-6 mb-12'>
-          <div className='hero-bio-container relative p-6 flex-1 bg-hud-surface/30 backdrop-blur-md border-l-4 border-hud-primary clip-angled-br'>
+          <div className='hero-bio-container relative p-6 flex-1 bg-hud-surface/30 backdrop-blur-md border-l-4 border-hud-primary '>
             <div className='absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-hud-primary/30'></div>
             <div className='absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-hud-primary/30'></div>
             <h2 className='text-2xl sm:text-3xl font-body font-bold text-hud-primary mb-4 flex items-center gap-2'>
