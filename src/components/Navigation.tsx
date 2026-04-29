@@ -4,14 +4,8 @@ import { BiCommand } from 'react-icons/bi';
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
 
 import { useSoundEngine } from '../hooks/useSoundEngine';
-interface NavigationProps {
-  isDark: boolean;
-  toggleTheme: () => void;
-  onOpenTerminal: () => void;
-  isMinimized?: boolean;
-  isInPortal?: boolean;
-  onNavClick?: (sectionId: string) => void;
-}
+import type { NavigationProps } from '../utils/types';
+
 export function Navigation({
   isDark,
   toggleTheme,
@@ -19,7 +13,10 @@ export function Navigation({
   isMinimized = false,
   isInPortal = false,
   onNavClick,
-}: NavigationProps) {
+}: NavigationProps
+
+
+) {
   const { isSoundEnabled, toggleSound } = useSoundEngine();
   const handleNavClick = (
     e: React.MouseEvent<HTMLAnchorElement>,

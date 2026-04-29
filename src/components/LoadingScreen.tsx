@@ -6,6 +6,8 @@ import { BiVolumeMute } from 'react-icons/bi';
 import { BsShieldCheck, BsVolumeUp } from 'react-icons/bs';
 import { BiometricScanContainer } from './HUDElements';
 import { FaUserCheck } from 'react-icons/fa';
+import { useTheme } from '../hooks/useTheme';
+
 
 gsap.registerPlugin(TextPlugin);
 interface LoadingScreenProps {
@@ -30,13 +32,15 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const [showSoundPrompt, setShowSoundPrompt] = useState(true);
   const [loadingAsset, setLoadingAsset] = useState(ASSETS[0]);
   const [progress, setProgress] = useState(0);
-  
+
+  const {isDark:isDarkMode} = useTheme();
   const {
     playBootSequence,
     playTypingTick,
     isSoundEnabled,
     enableSound,
     playEngageSound,
+    startAmbient,
   } = useSoundEngine();
 
   useEffect(() => {
@@ -121,8 +125,9 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
           x: 0,
           duration: 0.5,
           ease: 'power3.out',
+          
         },
-        '+=2',
+        '+=5',
       ); // Wait for scan to finish
       // Phase 3: Access Granted (Left)
       tl.to(
@@ -162,6 +167,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
                 playTypingTick();
               } else if (currentProgress === 100) {
                 setLoadingAsset('ALL SYSTEMS NOMINAL');
+                startAmbient();
               }
             }, 150);
           },
@@ -181,7 +187,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   return (
     <div
       ref={containerRef}
-      className={`fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden crt-curvature ${showSoundPrompt ? 'opacity-100' : 'opacity-0'}`}
+      className={`fixed inset-0 z-[100] ${!isDarkMode ? 'bg-hud-border' : 'bg-black'} flex flex-col items-center justify-center overflow-hidden crt-curvature ${showSoundPrompt ? 'opacity-100' : 'opacity-0'}`}
     >
       <div className='noise-overlay opacity-50'></div>
 
@@ -239,20 +245,18 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         className={`relative z-10 w-full max-w-6xl h-full flex flex-col items-center justify-center p-8 ${showSoundPrompt ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
       >
         {/* Phase 1: Face Scan Panel (Center) */}
-        <div
-          className={`w-full h-full p-8 transition-colors duration-500`}
-        >
+        <div className={`w-full h-full p-8 transition-colors duration-500`}>
           <div ref={faceScanRef}></div>
-          <BiometricScanContainer paused={showSoundPrompt}/>
+          <BiometricScanContainer paused={showSoundPrompt} />
         </div>
 
         {/* Phase 2: Identity Confirmed (Right) */}
 
         <div
           ref={identityRef}
-          className='absolute top-1/4 right-8 sm:right-16 translate-x-8'
+          className='absolute top-12 right-8 sm:right-16 translate-x-8'
         >
-          <div className='hud-bg-surface border border-hud-accent/50 p-6 shadow-[0_0_20px_var(--hud-accent)] backdrop-blur-md'>
+          <div className='hud-bg-surface border border-hud-primary/50 p-6 shadow-[0_0_20px_var(--hud-primary)] backdrop-blur-md'>
             <div className='flex items-center gap-4 mb-4 border-b border-hud-accent/30 pb-4'>
               <FaUserCheck className='w-8 h-8 text-hud-success' />
               <div>
@@ -291,7 +295,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         {/* Phase 3: Access Granted (Left) */}
         <div
           ref={accessRef}
-          className='absolute top-1/3 left-8 sm:left-16 -translate-x-8'
+          className='absolute top-1/2 left-8 sm:left-16 -translate-x-8'
         >
           <div className='hud-bg-surface border border-hud-primary  p-6 shadow-[0_0_30px_var(--hud-glow)] backdrop-blur-md relative overflow-hidden group'>
             <div className='absolute inset-0 bg-hud-primary/10 animate-pulse'></div>

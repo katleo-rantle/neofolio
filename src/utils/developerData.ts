@@ -6,11 +6,11 @@ export const developerProfile = {
   location: 'Durban, ZN',
   status: 'Available for hire',
   avatar: profile,
-  email: 'kprantle@gmail.com',
   socialLinks: {
     github: 'https://github.com/katleo-rantle',
     linkedin: 'https://linkedin.com',
     twitter: 'https://twitter.com',
+    email: 'kprantle@gmail.com',
   },
 };
 

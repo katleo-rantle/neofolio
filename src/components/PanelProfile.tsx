@@ -38,7 +38,7 @@ export function ProfilePanel() {
             </li>
             <li className='flex items-center gap-3 text-hud-text'>
               <Mail className='w-4 h-4 text-hud-primary' />
-              {developerProfile.email}
+              {developerProfile.socialLinks.email}
             </li>
           </ul>
         </div>

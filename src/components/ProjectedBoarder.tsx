@@ -14,8 +14,7 @@ export function ProjectedBorder() {
     return () => clearInterval(timer);
   }, []);
   return (
-    
-      <div className='fixed inset-0 pointer-events-none z-[100] overflow-hidden transform translate-z-0 will-change-transform'>
+    <div className='fixed inset-0 pointer-events-none z-101 overflow-hidden'>
       {/* Vignette & Light Leaks */}
       <div className='absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.8)] z-0 mix-blend-multiply dark:mix-blend-normal'></div>
       <div className='absolute inset-0 shadow-[inset_0_0_50px_var(--hud-glow)] z-0'></div>

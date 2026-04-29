@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
-
+import { useEffect, useState, useRef } from 'react';
 import { FaExclamationTriangle, FaUserCheck } from 'react-icons/fa';
 
 import { gsap } from 'gsap';
@@ -13,204 +12,6 @@ const scanMessages = [
   'RETICULATING SPLINES...',
   'ACCESS GRANTED.',
 ];
-
-export const HUDCorner = ({
-  position,
-}: {
-  position: 'tl' | 'tr' | 'bl' | 'br';
-}) => {
-  const baseClasses = 'absolute w-6 h-6 pointer-events-none z-10';
-  const positions = {
-    tl: 'top-0 left-0',
-    tr: 'top-0 right-0 rotate-90',
-    bl: 'bottom-0 left-0 -rotate-90',
-    br: 'bottom-0 right-0 rotate-180',
-  };
-  return (
-    <div className={`${baseClasses} ${positions[position]}`} aria-hidden='true'>
-      <svg
-        width='24'
-        height='24'
-        viewBox='0 0 24 24'
-        fill='none'
-        xmlns='http://www.w3.org/2000/svg'
-      >
-        <path d='M0 0H24V2H2V24H0V0Z' fill='var(--hud-primary)' />
-        <rect x='4' y='4' width='4' height='4' fill='var(--hud-primary)' />
-        <rect
-          x='8'
-          y='0'
-          width='2'
-          height='6'
-          fill='var(--hud-primary)'
-          opacity='0.5'
-        />
-        <rect
-          x='12'
-          y='0'
-          width='2'
-          height='4'
-          fill='var(--hud-primary)'
-          opacity='0.5'
-        />
-        <rect
-          x='16'
-          y='0'
-          width='2'
-          height='2'
-          fill='var(--hud-primary)'
-          opacity='0.5'
-        />
-        <rect
-          x='0'
-          y='8'
-          width='6'
-          height='2'
-          fill='var(--hud-primary)'
-          opacity='0.5'
-        />
-        <rect
-          x='0'
-          y='12'
-          width='4'
-          height='2'
-          fill='var(--hud-primary)'
-          opacity='0.5'
-        />
-        <rect
-          x='0'
-          y='16'
-          width='2'
-          height='2'
-          fill='var(--hud-primary)'
-          opacity='0.5'
-        />
-      </svg>
-    </div>
-  );
-};
-export const HUDBox = ({
-  children,
-  className = '',
-  glowing = false,
-}: {
-  children: React.ReactNode;
-  className?: string;
-  glowing?: boolean;
-}) => {
-  return (
-    <div
-      className={`relative p-6 hud-bg-surface hud-border clip-angled overflow-hidden group ${glowing ? 'animate-glow-pulse' : ''} ${className}`}
-    >
-      <div className='noise-overlay opacity-30'></div>
-      <div className='holo-shimmer'></div>
-      <div className='absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-hud-primary to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 animate-[data-stream_2s_linear_infinite]'></div>
-
-      <HUDCorner position='tl' />
-      <HUDCorner position='tr' />
-      <HUDCorner position='bl' />
-      <HUDCorner position='br' />
-
-      <div className='relative z-10'>{children}</div>
-    </div>
-  );
-};
-export const Scanlines = () => (
-  <div className='fixed inset-0 pointer-events-none z-50 overflow-hidden mix-blend-overlay crt-curvature'>
-    <div className='absolute inset-0 scanline animate-scan-line opacity-40'></div>
-    <div className='absolute inset-0 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.25)_51%)] bg-[length:100%_4px]'></div>
-  </div>
-);
-export const HUDDataReadout = ({
-  label,
-  length = 4,
-  updateInterval = 100,
-}: {
-  label: string;
-  length?: number;
-  updateInterval?: number;
-}) => {
-  const [val, setVal] = useState('0000');
-  useEffect(() => {
-    const int = setInterval(() => {
-      setVal(
-        Math.floor(Math.random() * Math.pow(16, length))
-          .toString(16)
-          .toUpperCase()
-          .padStart(length, '0'),
-      );
-    }, updateInterval);
-    return () => clearInterval(int);
-  }, [length, updateInterval]);
-  return (
-    <span className='font-mono text-[10px] sm:text-xs tracking-widest flex items-center gap-1'>
-      <span className='text-hud-text-muted'>{label}:</span>
-      <span className='text-hud-primary'>{val}</span>
-    </span>
-  );
-};
-export const HUDTitle = ({
-  children,
-  className = '',
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <div className={`relative flex flex-col items-start gap-2 mb-8 ${className}`}>
-    <div className='flex items-center gap-4 w-full'>
-      <div className='flex items-center gap-2 text-hud-primary opacity-70'>
-        <HUDDataReadout label='IDX' length={2} updateInterval={500} />
-        <span className='font-mono text-xl animate-pulse'>[</span>
-      </div>
-
-      <h2 className='text-2xl sm:text-3xl font-heading text-hud-text tracking-widest uppercase chromatic-text transition-all duration-300'>
-        {children}
-      </h2>
-
-      <div className='flex items-center gap-2 text-hud-primary opacity-70'>
-        <span className='font-mono text-xl animate-pulse'>]</span>
-        <div className='flex gap-1'>
-          <span
-            className='w-1 h-1 bg-hud-primary rounded-full animate-bounce'
-            style={{
-              animationDelay: '0ms',
-            }}
-          ></span>
-          <span
-            className='w-1 h-1 bg-hud-primary rounded-full animate-bounce'
-            style={{
-              animationDelay: '150ms',
-            }}
-          ></span>
-          <span
-            className='w-1 h-1 bg-hud-primary rounded-full animate-bounce'
-            style={{
-              animationDelay: '300ms',
-            }}
-          ></span>
-        </div>
-      </div>
-    </div>
-
-    <div className='w-full relative h-[2px] bg-hud-border/30 overflow-hidden'>
-      <div className='absolute top-0 left-1/2 -translate-x-1/2 h-full w-0 bg-hud-primary animate-[border-draw-anim_1.5s_ease-out_forwards]'></div>
-    </div>
-  </div>
-);
-export const HUDDivider = () => (
-  <div className='w-full h-12 relative flex items-center justify-center my-16 opacity-70'>
-    <div className='absolute left-0 right-0 h-[1px] bg-hud-primary/50' />
-    <div className='absolute left-1/4 w-2 h-2 rounded-full bg-hud-accent animate-pulse' />
-    <div className='absolute right-1/4 w-2 h-2 rounded-full bg-hud-accent animate-pulse' />
-    <div className='absolute left-1/2 -translate-x-1/2 w-6 h-6 border border-hud-primary rotate-45 bg-hud-bg flex items-center justify-center'>
-      <div className='w-2 h-2 bg-hud-primary rotate-45 animate-ping' />
-    </div>
-    <div className='absolute left-1/3 top-0 bottom-0 w-[1px] bg-hud-primary/30' />
-    <div className='absolute right-1/3 top-0 bottom-0 w-[1px] bg-hud-primary/30' />
-  </div>
-);
-
-// face scan
 
 // The specific Biometric Glyph you provided, wrapped in a component
 const BiometricFaceGlyph = ({ className }: { className?: string }) => (
@@ -304,7 +105,7 @@ export const BiometricScanContainer = ({ paused }: { paused: boolean }) => {
         {
           scale: 0.75,
           filter: 'brightness(1.5) drop-shadow(0 0 15px var(--hud-glow))',
-          color: 'var(--hud-success)', // Use your success variable
+          color: 'var(--hud-primary)', // Use your success variable
           duration: 0.1,
           ease: 'back.in',
         },
@@ -363,7 +164,7 @@ export const BiometricScanContainer = ({ paused }: { paused: boolean }) => {
       {/* Positioned absolutely over the center of the container */}
       <div
         ref={successRef}
-        className='absolute inset-0 flex items-center justify-center text-hud-success'
+        className='absolute inset-0 flex items-center justify-center text-hud-accent'
       >
         <FaUserCheck className='w-[65%] h-[65%]' />
       </div>
@@ -380,7 +181,6 @@ export const BiometricScanContainer = ({ paused }: { paused: boolean }) => {
 
 // 1. Define the helper function outside the component to keep the render clean
 // Map WMO weather codes to conditions and icons
-
 
 export const WeatherHUD = () => {
   const { weatherData, loading, error } = useWeather();

@@ -16,6 +16,7 @@ interface SoundEngineContextType {
   playTransition: () => void;
   playTypingTick: () => void;
   playEngageSound: () => void;
+  startAmbient: () => void;
 }
 const SoundEngineContext = createContext<SoundEngineContextType | null>(null);
 export const useSoundEngine = () => {
@@ -30,9 +31,21 @@ export const SoundProvider: React.FC<{
 }> = ({ children }) => {
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
-  const ambientOscRef = useRef<OscillatorNode | null>(null);
   const ambientGainRef = useRef<GainNode | null>(null);
-  const lfoRef = useRef<OscillatorNode | null>(null);
+  
+
+  const audioBufferRef = useRef<AudioBuffer | null>(null);
+  const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
+
+  // 1. Fetch and decode your sound file
+  const loadAmbientSound = useCallback(async (url: string) => {
+    if (!audioCtxRef.current) return;
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    audioBufferRef.current =
+      await audioCtxRef.current.decodeAudioData(arrayBuffer);
+  }, []);
+
   // Initialize from localStorage
   useEffect(() => {
     const saved = localStorage.getItem('site_sounds');
@@ -50,62 +63,61 @@ export const SoundProvider: React.FC<{
       audioCtxRef.current.resume();
     }
   }, []);
-  const startAmbient = useCallback(() => {
+  // 2. Modified startAmbient
+  const startAmbient = useCallback(async () => {
     if (!audioCtxRef.current) return;
+
+    // If we haven't loaded the file yet, load it
+    if (!audioBufferRef.current) {
+      await loadAmbientSound(
+        '/sounds/Star_Trek_LCARS_display_Screensaver(48k).m4a',
+      );
+    }
+
     const ctx = audioCtxRef.current;
-    if (ambientOscRef.current) return; // Already playing
-    const osc = ctx.createOscillator();
+    if (sourceNodeRef.current) return; // Already playing
+
+    const source = ctx.createBufferSource();
+    source.buffer = audioBufferRef.current;
+    source.loop = true; // Essential for background music
+
     const gain = ctx.createGain();
-    const filter = ctx.createBiquadFilter();
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    // Deep drone
-    osc.type = 'sine';
-    osc.frequency.value = 55; // Low hum
-    // Filter to make it muffled
-    filter.type = 'lowpass';
-    filter.frequency.value = 200;
-    // LFO for subtle pulsing
-    lfo.type = 'sine';
-    lfo.frequency.value = 0.1; // Very slow
-    lfoGain.gain.value = 10; // Frequency modulation amount
-    lfo.connect(lfoGain);
-    lfoGain.connect(filter.frequency);
-    // Volume setup
     gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 2); // Fade in
-    osc.connect(filter);
-    filter.connect(gain);
+    gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + 2); // Fade in
+
+    source.connect(gain);
     gain.connect(ctx.destination);
-    osc.start();
-    lfo.start();
-    ambientOscRef.current = osc;
+
+    source.start();
+    sourceNodeRef.current = source;
     ambientGainRef.current = gain;
-    lfoRef.current = lfo;
-  }, []);
+  }, [loadAmbientSound]);
+
+  // 3. Modified stopAmbient
   const stopAmbient = useCallback(() => {
-    if (ambientGainRef.current && audioCtxRef.current) {
+    if (
+      ambientGainRef.current &&
+      audioCtxRef.current &&
+      sourceNodeRef.current
+    ) {
       const ctx = audioCtxRef.current;
       ambientGainRef.current.gain.linearRampToValueAtTime(
         0,
         ctx.currentTime + 1,
       );
+
       setTimeout(() => {
-        ambientOscRef.current?.stop();
-        lfoRef.current?.stop();
-        ambientOscRef.current?.disconnect();
-        ambientGainRef.current?.disconnect();
-        lfoRef.current?.disconnect();
-        ambientOscRef.current = null;
+        sourceNodeRef.current?.stop();
+        sourceNodeRef.current?.disconnect();
+        sourceNodeRef.current = null;
         ambientGainRef.current = null;
-        lfoRef.current = null;
       }, 1000);
     }
   }, []);
   useEffect(() => {
     if (isSoundEnabled) {
       initAudio();
-      startAmbient();
+      // startAmbient();
     } else {
       stopAmbient();
     }
@@ -278,9 +290,10 @@ export const SoundProvider: React.FC<{
         playTransition,
         playTypingTick,
         playEngageSound,
+        startAmbient,
       }}
     >
       {children}
     </SoundEngineContext.Provider>
   );
-};
+};;;;

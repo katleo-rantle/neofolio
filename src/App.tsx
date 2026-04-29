@@ -7,15 +7,32 @@ import { Navigation } from './components/Navigation';
 import { useTheme } from './hooks/useTheme';
 import { useSoundEngine } from './hooks/useSoundEngine';
 import { StickyAside } from './components/StickyAside';
+import { CommandTerminal } from './components/CommandTerminal';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const { isDark, toggleTheme } = useTheme();
-  const [_isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [isNavMinimized, _setIsNavMinimized] = useState(false);
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [isNavMinimized, setIsNavMinimized] = useState(false);
   const [_forceClosePortal, setForceClosePortal] = useState(false);
   const [isPortalOpen, setIsPortalOpen] = useState(false);
   const { playHover, playClick, playTransition } = useSoundEngine();
+
+  // Scroll detection for navbar minimize
+  useEffect(() => {
+    if (isLoading) return;
+    const handleScroll = () => {
+      const heroSection = document.querySelector('#hero-section');
+      if (heroSection) {
+        const heroBottom = heroSection.getBoundingClientRect().bottom;
+        setIsNavMinimized(heroBottom < 100);
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial state
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isLoading]);
+
 
   // Global sound listeners
   useEffect(() => {
@@ -91,8 +108,11 @@ function App() {
             <main className='flex-1 lg:pr-[25.5rem] w-full'>
               <HeroSection />
             </main>
-            <StickyAside/>
-
+            <StickyAside />
+            <CommandTerminal
+              isOpen={isTerminalOpen}
+              onClose={() => setIsTerminalOpen(false)}
+            />
           </div>
         </>
       )}
