@@ -41,7 +41,7 @@ export function Navigation({
   };
   return (
     <div
-      className={`fixed top-12 left-6 w-[calc(100%-3rem)] lg:right-[calc(24rem+1.5rem)] lg:w-auto lg:left-6 pointer-events-none transition-all duration-300 ${isInPortal ? 'z-[110]' : 'z-40'}`}
+      className={`fixed top-12 left-6 w-[calc(100%-3rem)] lg:right-[calc(24rem+1.5rem)] lg:w-auto lg:left-6 pointer-events-none transition-all duration-300 ${isInPortal ? 'z-110' : 'z-30'}`}
     >
       {/* Integrated Nav Bar - flush with top border */}
       <header className='w-full bg-hud-bg/80 backdrop-blur-md border border-hud-border pointer-events-auto relative transition-all duration-300 clip-angled'>

@@ -87,7 +87,7 @@ function App() {
             isInPortal={isPortalOpen}
             onNavClick={handleNavClick}
           />
-          <div className='flex relative z-10'>
+          <div className='flex relative'>
             <main className='flex-1 lg:pr-[25.5rem] w-full'>
               <HeroSection />
             </main>

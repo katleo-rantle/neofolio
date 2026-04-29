@@ -23,7 +23,7 @@ export function StickyAside() {
       {/* Aside Container */}
       <aside
         className={`
-        fixed top-12 right-6 bottom-12 z-[41] w-full sm:w-96 bg-hud-surface transition-transform duration-300 ease-in-out flex flex-col border border-hud-border clip-angled overflow-hidden
+        fixed top-12 right-6 ml-60 bottom-12 z-49 w-full sm:w-96 bg-hud-surface transition-transform duration-300 ease-in-out flex flex-col border border-hud-border clip-angled overflow-hidden
         ${isOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'}
       `}
       >
@@ -46,7 +46,7 @@ export function StickyAside() {
         </div>
 
         {/* Content Area */}
-        <div className='flex-1 overflow-hidden relative'>
+        <div className='flex-1 overflow-hidden relative ml-12 sm:ml-0'>
           <div
             className={`absolute inset-0 transition-opacity duration-300 ${activeTab === 'profile' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}
           >
@@ -63,7 +63,7 @@ export function StickyAside() {
       {/* Mobile Overlay */}
       {isOpen && (
         <div
-          className='lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-30'
+          className='lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-45'
           onClick={() => setIsOpen(false)}
         />
       )}
