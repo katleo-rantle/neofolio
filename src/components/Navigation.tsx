@@ -2,7 +2,6 @@ import React from 'react';
 import { FiSun, FiMoon, FiTerminal } from 'react-icons/fi';
 import { BiCommand } from 'react-icons/bi';
 import { FaVolumeUp, FaVolumeMute } from 'react-icons/fa';
-import { IoTerminal } from 'react-icons/io5';
 
 import { useSoundEngine } from '../hooks/useSoundEngine';
 interface NavigationProps {
@@ -42,28 +41,11 @@ export function Navigation({
   };
   return (
     <div
-      className={`fixed top-6 left-6 w-[calc(100%-3rem)] lg:right-[calc(24rem+1.5rem)] lg:w-auto lg:left-6 pointer-events-none transition-all duration-300 ${isInPortal ? 'z-[110]' : 'z-40'}`}
+      className={`fixed top-12 left-6 w-[calc(100%-3rem)] lg:right-[calc(24rem+1.5rem)] lg:w-auto lg:left-6 pointer-events-none transition-all duration-300 ${isInPortal ? 'z-[110]' : 'z-40'}`}
     >
       {/* Integrated Nav Bar - flush with top border */}
       <header className='w-full bg-hud-bg/80 backdrop-blur-md border border-hud-border pointer-events-auto relative transition-all duration-300 clip-angled'>
-        <div className='noise-overlay opacity-20'></div>
 
-        {/* Data Stream Line along bottom */}
-        <div className='absolute bottom-0 left-0 w-full h-[1px] overflow-hidden'>
-          <div className='absolute top-0 h-full w-32 bg-gradient-to-r from-transparent via-hud-primary to-transparent animate-[data-stream_3s_linear_infinite]'></div>
-        </div>
-
-        {/* Ticker strip - collapses when minimized */}
-        <div
-          className={`w-full bg-hud-primary/5 border-b border-hud-primary/20 overflow-hidden flex items-center transition-all duration-300 ${isMinimized ? 'h-0 opacity-0' : 'h-5 opacity-100'}`}
-        >
-          <div className='animate-data-ticker whitespace-nowrap font-mono text-[9px] text-hud-primary/60 tracking-widest px-4'>
-            SYS.UPTIME: 00:04:32 // MEM: 847MB // THREADS: 12 // LAT: 37.7749°N
-            // LON: 122.4194°W // STATUS: OPTIMAL // SEC_LEVEL: ALPHA //
-            SYS.UPTIME: 00:04:32 // MEM: 847MB // THREADS: 12 // LAT: 37.7749°N
-            // LON: 122.4194°W // STATUS: OPTIMAL // SEC_LEVEL: ALPHA
-          </div>
-        </div>
 
         <div
           className={`px-4 sm:px-6 lg:px-8 max-w-full flex items-center justify-between relative z-10 transition-all duration-300 ${isMinimized ? 'h-10' : 'h-14'}`}

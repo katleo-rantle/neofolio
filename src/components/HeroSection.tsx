@@ -13,7 +13,7 @@ import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import { useVisitCounter } from '../hooks/useVisitCounter';
 import { useGitHubStats } from '../hooks/useGitHubStats';
-import { HUDDataReadout } from './HUDElements';
+import { WeatherHUD } from './HUDElements';
 
 export function HeroSection() {
   const [showScroll, setShowScroll] = useState(true);
@@ -38,7 +38,6 @@ export function HeroSection() {
       }, 4000);
 
       // Store original texts
-      const devName = document.querySelectorAll('.dev-name');
       const greetingEl = document.querySelector('.hero-greeting');
       const nameEls = document.querySelectorAll('.hero-name-text');
       const titleEl = document.querySelector('.hero-title-text');
@@ -239,35 +238,8 @@ export function HeroSection() {
             </div>
           </div>
 
-          <div className='flex items-center gap-4 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled flex-1 min-w-[250px]'>
-            <div className='flex-1'>
-              <div className='flex justify-between text-hud-text-muted mb-1'>
-                <span>CPU</span>
-                <HUDDataReadout label='' length={2} updateInterval={800} />%
-              </div>
-              <div className='h-1 bg-hud-border/30 w-full'>
-                <div className='h-full bg-hud-primary w-[45%] animate-pulse'></div>
-              </div>
-            </div>
-            <div className='flex-1'>
-              <div className='flex justify-between text-hud-text-muted mb-1'>
-                <span>MEM</span>
-                <HUDDataReadout label='' length={2} updateInterval={1200} />%
-              </div>
-              <div className='h-1 bg-hud-border/30 w-full'>
-                <div className='h-full bg-hud-accent w-[72%] animate-pulse'></div>
-              </div>
-            </div>
-            <div className='flex-1'>
-              <div className='flex justify-between text-hud-text-muted mb-1'>
-                <span>NET</span>
-                <HUDDataReadout label='' length={2} updateInterval={400} />
-              </div>
-              <div className='h-1 bg-hud-border/30 w-full'>
-                <div className='h-full bg-hud-success w-[88%] animate-pulse'></div>
-              </div>
-            </div>
-          </div>
+          {/* <WeatherWidget /> */}
+          <WeatherHUD />
 
           <div className='flex items-center gap-3 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled'>
             <FaEye className='w-4 h-4 text-hud-primary' />
@@ -404,7 +376,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className='flex flex-wrap gap-4 relative z-10'>
+        <div className='flex flex-wrap gap-4 relative z-10 mb-12' >
           <a
             href='#projects'
             className='hero-cta relative overflow-hidden px-8 py-4 bg-hud-primary text-hud-bg font-heading font-bold tracking-widest hover:bg-hud-accent transition-colors clip-notched shadow-[0_0_15px_var(--hud-primary)] group'
@@ -424,14 +396,6 @@ export function HeroSection() {
         </div>
       </div>
 
-      {/* <div className='hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2'>
-        <div className='font-mono text-[10px] text-hud-primary tracking-widest animate-pulse'>
-          SCROLL_DOWN
-        </div>
-        <div className='w-6 h-10 border-2 border-hud-primary clip-angled flex justify-center p-1'>
-          <div className='w-1 h-2 bg-hud-accent animate-[scan-line_1.5s_linear_infinite]'></div>
-        </div>
-      </div> */}
       {showScroll && (
         <div className='hero-scroll absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-0'>
           <FiChevronDown className='w-8 h-8 text-hud-primary opacity-50' />

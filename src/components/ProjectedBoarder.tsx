@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
+import { useWeather } from '../hooks/useWeather';
 export function ProjectedBorder() {
   const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+  const { error } = useWeather();
+  const isOffline = !!error;
+
   useEffect(() => {
     const timer = setInterval(
       () => setTime(new Date().toLocaleTimeString()),
@@ -80,20 +85,19 @@ export function ProjectedBorder() {
       <div className='absolute top-8 left-8 font-mono text-[10px] text-hud-primary/70 tracking-widest hidden sm:block'>
         <div className='flex items-center gap-2'>
           <span className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-pulse'></span>
-          SYS.PROJECTION_MATRIX
-        </div>
-        <div className='opacity-70 mt-1'>
-          COORD: {Math.random().toFixed(4)} // {Math.random().toFixed(4)}
-          // {Math.random().toFixed(4)}
+          T-MINUS: {time}
         </div>
       </div>
 
-      <div className='absolute top-8 right-8 font-mono text-[10px] text-hud-primary/70 tracking-widest text-right hidden sm:block'>
-        <div className='flex items-center justify-end gap-2'>
-          <span className='w-1.5 h-1.5 bg-hud-success rounded-full animate-pulse'></span>
-          UPLINK_SECURE
+      <div className='absolute top-8 right-8 font-mono text-[10px] tracking-widest text-right hidden sm:block'>
+        <div
+          className={`flex items-center justify-end gap-2 ${isOffline ? 'text-hud-accent' : 'text-hud-primary/70'}`}
+        >
+          <span
+            className={`w-1.5 h-1.5 rounded-full ${isOffline ? 'bg-hud-accent' : 'bg-hud-success animate-pulse'}`}
+          ></span>
+          SYSTEM {isOffline ? 'OFFLINE' : 'ONLINE'}
         </div>
-        <div className='opacity-70 mt-1'>T-MINUS: {time}</div>
       </div>
 
       <div className='absolute bottom-6 left-8 font-mono text-[10px] text-hud-accent/70 tracking-widest hidden sm:block'>
@@ -105,7 +109,7 @@ export function ProjectedBorder() {
 
       <div className='absolute bottom-6 right-8 font-mono text-[10px] text-hud-accent/70 tracking-widest text-right hidden sm:block'>
         <div>SYS_V2.4_ONLINE</div>
-        <div className='opacity-70 mt-1'>FRAME_RATE: 144HZ</div>
+        {/* <div className='opacity-70 mt-1'>FRAME_RATE: 144HZ</div> */}
       </div>
     </div>
   );

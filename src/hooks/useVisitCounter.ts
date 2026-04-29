@@ -16,7 +16,6 @@ export function useVisitCounter() {
     setVisits(newVisits);
 
     // Animate counter
-    let start = 0;
     const duration = 1500; // 1.5 seconds
     const startTime = performance.now();
 

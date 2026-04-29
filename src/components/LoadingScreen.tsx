@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { TextPlugin } from 'gsap/TextPlugin';
 import { useSoundEngine } from '../hooks/useSoundEngine';
-import { BiCheckCircle, BiVolumeMute } from 'react-icons/bi';
+import { BiVolumeMute } from 'react-icons/bi';
 import { BsShieldCheck, BsVolumeUp } from 'react-icons/bs';
 import { BiometricScanContainer } from './HUDElements';
 import { FaUserCheck } from 'react-icons/fa';
@@ -28,11 +28,9 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const loadingRef = useRef<HTMLDivElement>(null);
   const promptRef = useRef<HTMLDivElement>(null);
   const [showSoundPrompt, setShowSoundPrompt] = useState(true);
-  const [scanStatus, setScanStatus] = useState('INITIALIZING...');
-  const [isFaceScanned, setIsFaceScanned] = useState(false);
   const [loadingAsset, setLoadingAsset] = useState(ASSETS[0]);
   const [progress, setProgress] = useState(0);
-  const [time, setTime] = useState(new Date().toLocaleTimeString());
+  
   const {
     playBootSequence,
     playTypingTick,
@@ -40,13 +38,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     enableSound,
     playEngageSound,
   } = useSoundEngine();
-  useEffect(() => {
-    const timer = setInterval(
-      () => setTime(new Date().toLocaleTimeString()),
-      1000,
-    );
-    return () => clearInterval(timer);
-  }, []);
+
   useEffect(() => {
     if (isSoundEnabled && !showSoundPrompt) {
       playBootSequence();
@@ -119,21 +111,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
         duration: 0.3,
         ease: 'power2.in',
       });
-      // Phase 1: Face Scan (Center)
-      tl.to(faceScanRef.current, {
-        opacity: 1,
-        scale: 1,
-        duration: 3,
-        ease: 'back.out(1.5)',
-        onStart: () => {
-          setTimeout(() => setScanStatus('SCANNING...'), 500);
-          setTimeout(() => {
-            setScanStatus('MATCH FOUND');
-            setIsFaceScanned(true);
-            playTypingTick();
-          }, 2000);
-        },
-      });
+
       // Phase 2: Identity Confirmed (Right)
       tl.to(
         identityRef.current,
@@ -262,7 +240,7 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
       >
         {/* Phase 1: Face Scan Panel (Center) */}
         <div
-          className={`w-full h-full p-8 transition-colors duration-500 ${isFaceScanned ? 'text-green-500' : 'text-hud-primary'}`}
+          className={`w-full h-full p-8 transition-colors duration-500`}
         >
           <div ref={faceScanRef}></div>
           <BiometricScanContainer paused={showSoundPrompt}/>

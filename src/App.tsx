@@ -6,14 +6,15 @@ import { HeroSection } from './components/HeroSection';
 import { Navigation } from './components/Navigation';
 import { useTheme } from './hooks/useTheme';
 import { useSoundEngine } from './hooks/useSoundEngine';
+import { StickyAside } from './components/StickyAside';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
   const { isDark, toggleTheme } = useTheme();
-  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
-  const [isNavMinimized, setIsNavMinimized] = useState(false);
+  const [_isTerminalOpen, setIsTerminalOpen] = useState(false);
+  const [isNavMinimized, _setIsNavMinimized] = useState(false);
+  const [_forceClosePortal, setForceClosePortal] = useState(false);
   const [isPortalOpen, setIsPortalOpen] = useState(false);
-  const [forceClosePortal, setForceClosePortal] = useState(false);
   const { playHover, playClick, playTransition } = useSoundEngine();
 
   // Global sound listeners
@@ -90,14 +91,8 @@ function App() {
             <main className='flex-1 lg:pr-[25.5rem] w-full'>
               <HeroSection />
             </main>
-            <aside className='hidden lg:block absolute top-0 right-0 w-[25.5rem] h-full bg-hud-surface/80 backdrop-blur-lg border-l border-hud-primary/20 p-8'>
-              <h2 className='text-xl font-heading text-hud-primary mb-4'>
-                Sidebar
-              </h2>
-              <p className='text-sm text-hud-text'>
-                This is a sidebar that appears on larger screens.
-              </p>
-            </aside>
+            <StickyAside/>
+
           </div>
         </>
       )}

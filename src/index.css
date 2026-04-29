@@ -6,6 +6,10 @@
 
 @import "tailwindcss";
 
+html {
+  font-size: 75%; 
+}
+
 @theme {
   /* 1. Register variables as Theme Tokens */
   --color-hud-bg: var(--hud-bg);

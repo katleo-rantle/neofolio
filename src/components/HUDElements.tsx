@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { FaUserCheck } from 'react-icons/fa';
+import { FaExclamationTriangle, FaUserCheck } from 'react-icons/fa';
 
 import { gsap } from 'gsap';
 import { useGSAP } from '@gsap/react';
+import { useWeather } from '../hooks/useWeather';
 
 const scanMessages = [
   'ANALYZING BIOMETRICS...',
@@ -375,4 +376,66 @@ export const BiometricScanContainer = ({ paused }: { paused: boolean }) => {
       </div>
     </div>
   );
-};;;
+};
+
+// 1. Define the helper function outside the component to keep the render clean
+// Map WMO weather codes to conditions and icons
+
+
+export const WeatherHUD = () => {
+  const { weatherData, loading, error } = useWeather();
+
+  if (loading) {
+    return (
+        <div className='flex items-center gap-4 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled flex-1 min-w-[250px]'>
+          <div className='flex-1 flex items-center justify-center gap-2 text-hud-primary'>
+            <span className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'></span>
+            <span
+              className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
+              style={{
+                animationDelay: '150ms',
+              }}
+            ></span>
+            <span
+              className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-bounce'
+              style={{
+                animationDelay: '300ms',
+              }}
+            ></span>
+            <span className='text-xs font-mono'>WEATHER_SYNC</span>
+          </div>
+        </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='flex items-center gap-2 text-hud-accent'>
+        <FaExclamationTriangle className='w-3 h-3' />
+        <span className='font-monotemp text-[10px] uppercase'>SIGNAL LOST</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-4 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled flex-1 min-w-[250px]">
+      {weatherData.map((data) =>
+      <div key={data.city} className="flex-1">
+          <div className="flex items-center justify-start gap-5 text-hud-text-muted mb-1 text-[10px]">
+            <span className="truncate">{data.city}</span>
+            <div className="flex items-center gap-1 text-hud-primary">
+              {data.icon}
+            </div>
+          </div>
+          <div className="flex items-baseline gap-1">
+            <span className="text-hud-primary font-bold text-sm">
+              {data.temperature}°
+            </span>
+            <span className="text-hud-text-muted text-[9px]">
+              {data.condition}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>)
+};

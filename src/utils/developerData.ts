@@ -1,11 +1,12 @@
+import profile from '@/assets/profile.jpeg';
 export const developerProfile = {
   name: 'Katleo Rantle',
   title: 'Full-Stack Developer & Creative Technologist',
   bio: 'Bridging the gap between design and engineering. Specializing in high-performance web applications, interactive 3D experiences, and AI integrations.',
   location: 'Durban, ZN',
   status: 'Available for hire',
-  avatar:
-    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=300&q=80',
+  avatar: profile,
+  email: 'kprantle@gmail.com',
   socialLinks: {
     github: 'https://github.com/katleo-rantle',
     linkedin: 'https://linkedin.com',
@@ -172,7 +173,7 @@ export const certificates = [
 ];
 
 export const systemPrompt = `
-You are an AI assistant integrated into the portfolio website of Alex Chen, a Full-Stack Developer & Creative Technologist.
+You are an AI assistant integrated into the portfolio website of ${developerProfile.name}, a Full-Stack Developer & Creative Technologist.
 Your role is to answer questions about Alex's skills, experience, and projects in a helpful, slightly futuristic, and professional tone.
 Keep your answers concise and relevant.
 
