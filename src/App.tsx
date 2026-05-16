@@ -19,20 +19,23 @@ function App() {
   const { playHover, playClick, playTransition } = useSoundEngine();
 
   // Scroll detection for navbar minimize
-  useEffect(() => {
-    if (isLoading) return;
-    const handleScroll = () => {
-      const heroSection = document.querySelector('#hero-section');
-      if (heroSection) {
-        const heroBottom = heroSection.getBoundingClientRect().bottom;
-        setIsNavMinimized(heroBottom < 100);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial state
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [isLoading]);
+useEffect(() => {
+  if (isLoading) return;
 
+  const handleScroll = () => {
+    // Set your target 'X' pixels here (e.g., 20 pixels)
+    const thresholdX = 50;
+
+    // As soon as scrollY is greater than X, minimize will be true
+    const shouldMinimize = window.scrollY > thresholdX;
+    setIsNavMinimized(shouldMinimize);
+  };
+  window.addEventListener('scroll', handleScroll, { passive: true })
+  // Run once initially to capture state if page loads already scrolled down
+  handleScroll();
+
+  return () => window.removeEventListener('scroll', handleScroll);
+}, [isLoading]);
 
   // Global sound listeners
   useEffect(() => {
@@ -114,6 +117,10 @@ function App() {
               onClose={() => setIsTerminalOpen(false)}
             />
           </div>
+          <div className='h-screen bg-hud-primary/50'id='projects'>
+  
+          </div>
+          <div className='h-screen bg-hud-surface/50' id='skills'></div>
         </>
       )}
     </div>

@@ -32,7 +32,6 @@ export const SoundProvider: React.FC<{
   const [isSoundEnabled, setIsSoundEnabled] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
   const ambientGainRef = useRef<GainNode | null>(null);
-  
 
   const audioBufferRef = useRef<AudioBuffer | null>(null);
   const sourceNodeRef = useRef<AudioBufferSourceNode | null>(null);
@@ -122,10 +121,51 @@ export const SoundProvider: React.FC<{
       stopAmbient();
     }
   }, [isSoundEnabled, initAudio, startAmbient, stopAmbient]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        // User left the tab - Pause or Fade Out
+        if (isSoundEnabled && ambientGainRef.current && audioCtxRef.current) {
+          const ctx = audioCtxRef.current;
+          // Fast fade out (0.2s) to avoid an abrupt "pop"
+          ambientGainRef.current.gain.exponentialRampToValueAtTime(
+            0.0001,
+            ctx.currentTime + 0.2,
+          );
+        }
+      } else {
+        // User returned to the tab - Resume or Fade In
+        if (isSoundEnabled && ambientGainRef.current && audioCtxRef.current) {
+          const ctx = audioCtxRef.current;
+          // Resume context in case the browser suspended it
+          ctx.resume();
+          // Fade back to the target volume (0.2)
+          ambientGainRef.current.gain.exponentialRampToValueAtTime(
+            0.2,
+            ctx.currentTime + 0.3,
+          );
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [isSoundEnabled]);
+
   const toggleSound = () => {
     setIsSoundEnabled((prev) => {
       const next = !prev;
       localStorage.setItem('site_sounds', String(next));
+      // Handle the side effect immediately
+      if (next) {
+        startAmbient();
+      } else {
+        stopAmbient();
+      }
       return next;
     });
   };
@@ -296,4 +336,4 @@ export const SoundProvider: React.FC<{
       {children}
     </SoundEngineContext.Provider>
   );
-};;;;
+};

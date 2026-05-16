@@ -82,25 +82,14 @@ export function ProjectedBorder() {
       </div>
 
       {/* Data Readouts */}
-      <div className='absolute top-8 left-8 font-mono text-[10px] text-hud-primary/70 tracking-widest hidden sm:block'>
+      <div className='absolute top-8 left-8 font-mono text-[10px] text-hud-text/70 tracking-widest hidden sm:block'>
         <div className='flex items-center gap-2'>
-          <span className='w-1.5 h-1.5 bg-hud-primary rounded-full animate-pulse'></span>
+          <span className='w-1.5 h-1.5 bg-hud-accent rounded-full animate-pulse'></span>
           T-MINUS: {time}
         </div>
       </div>
 
-      <div className='absolute top-8 right-8 font-mono text-[10px] tracking-widest text-right hidden sm:block'>
-        <div
-          className={`flex items-center justify-end gap-2 ${isOffline ? 'text-hud-accent' : 'text-hud-primary/70'}`}
-        >
-          <span
-            className={`w-1.5 h-1.5 rounded-full ${isOffline ? 'bg-hud-accent' : 'bg-hud-success animate-pulse'}`}
-          ></span>
-          SYSTEM {isOffline ? 'OFFLINE' : 'ONLINE'}
-        </div>
-      </div>
-
-      <div className='absolute bottom-6 left-8 font-mono text-[10px] text-hud-accent/70 tracking-widest hidden sm:block'>
+      <div className='absolute bottom-6 left-8 font-mono text-[10px] text-hud-text/70 tracking-widest hidden sm:block'>
         <div>MEM_ALLOC: 64TB</div>
         <div className='w-24 h-[2px] bg-hud-accent/30 mt-1'>
           <div className='h-full bg-hud-accent w-[78%] animate-pulse'></div>
@@ -108,8 +97,16 @@ export function ProjectedBorder() {
       </div>
 
       <div className='absolute bottom-6 right-8 font-mono text-[10px] text-hud-accent/70 tracking-widest text-right hidden sm:block'>
-        <div>SYS_V2.4_ONLINE</div>
-        {/* <div className='opacity-70 mt-1'>FRAME_RATE: 144HZ</div> */}
+
+          <div
+            className={`flex items-center justify-end gap-2 text-hud-text`}
+          >
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${isOffline ? 'bg-hud-accent' : 'bg-hud-success animate-pulse'}`}
+            ></span>
+            SYSTEM {isOffline ? 'OFFLINE' : 'ONLINE'}
+          </div>
+        
       </div>
     </div>
   );

@@ -164,24 +164,6 @@ export function HeroSection() {
     }, sectionRef);
     return () => ctx.revert();
   }, []);
-  // Generate random data fragments
-  const dataFragments = Array.from({
-    length: 20,
-  }).map((_, i) => ({
-    id: i,
-    text:
-      i % 3 === 0
-        ? `0x${Math.floor(Math.random() * 16777215)
-            .toString(16)
-            .toUpperCase()}`
-        : i % 3 === 1
-          ? `SYS.CALL(${Math.floor(Math.random() * 100)})`
-          : Math.random().toString(2).substring(2, 10),
-    left: `${Math.random() * 100}%`,
-    top: `${Math.random() * 100}%`,
-    duration: 15 + Math.random() * 20,
-    delay: Math.random() * 5,
-  }));
 
   // scroll arrow
   useEffect(() => {
@@ -192,39 +174,38 @@ export function HeroSection() {
 
   return (
     <section
-      id='hero-section'
+      id='home'
       ref={sectionRef}
       className='relative min-h-screen flex items-center pt-24 px-4 sm:px-6 lg:px-8 overflow-hidden'
     >
-      {/* Layered Background */}
+      {/* Layered Background - Intense Neon (Adaptive) */}
       <div className='absolute inset-0 overflow-hidden pointer-events-none z-0'>
-        <div className='absolute inset-0 circuit-bg opacity-10'></div>
-        <div className='absolute -bottom-48 -right-48 w-[800px] h-[800px] radar-sweep opacity-20'></div>
+        <div className='absolute inset-0 circuit-bg opacity-30'></div>
+        <div className='absolute -bottom-48 -right-48 w-[800px] h-[800px] radar-sweep opacity-30'></div>
 
-        {/* Pulse Rings */}
-        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-hud-primary/50 animate-[pulse-ring_4s_infinite]'></div>
-        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border border-hud-accent/30 animate-[pulse-ring_4s_infinite_2s]'></div>
+        {/* Strong Pulse Rings */}
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full border border-hud-primary/70 animate-[pulse-ring_2.8s_infinite]'></div>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 rounded-full border border-hud-primary/50 animate-[pulse-ring_3.6s_infinite_0.8s]'></div>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 rounded-full border border-hud-primary/30 animate-[pulse-ring_4.8s_infinite_2.2s]'></div>
 
-        {/* Floating Data Fragments */}
-        {dataFragments.map((frag) => (
-          <div
-            key={frag.id}
-            className='absolute font-mono text-[10px] text-hud-primary opacity-30 animate-float mix-blend-screen'
-            style={{
-              left: frag.left,
-              top: frag.top,
-              animationDuration: `${frag.duration}s`,
-              animationDelay: `${frag.delay}s`,
-            }}
-          >
-            {frag.text}
-          </div>
-        ))}
+        {/* Adaptive Neon Grid - Visible in Light Mode */}
+        <div className='absolute inset-0 bg-[linear-gradient(to_right,var(--hud-primary)_1px,transparent_1px),linear-gradient(to_bottom,var(--hud-primary)_1px,transparent_1px)] bg-[size:50px_50px] opacity-30 dark:opacity-20'></div>
+
+        {/* Powerful Scan Lines */}
+        <div className='absolute inset-0 bg-gradient-to-b from-transparent via-hud-primary/30 to-transparent animate-[scan_4s_linear_infinite]'></div>
+        <div className='absolute inset-0 bg-gradient-to-r from-transparent via-hud-primary/20 to-transparent animate-[scan_5.5s_linear_infinite_1.5s]'></div>
+
+
+        {/* Corner Brackets */}
+        
+        <div className='absolute top-4 right-4 w-5 h-5 border-r-2 border-t-2 border-hud-primary shadow-[0_0_15px_var(--hud-primary)]'></div>
+        
+        <div className='absolute bottom-4 right-4 w-5 h-5 border-r-2 border-b-2 border-hud-primary shadow-[0_0_15px_var(--hud-primary)]'></div>
       </div>
 
       <div className='max-w-5xl mx-auto w-full z-10 relative'>
         {/* Complex HUD Status Panel */}
-        <div className='hero-status-panel flex flex-wrap gap-4 mb-8 font-mono text-xs'>
+        <div className='hero-status-panel flex flex-wrap gap-4 mb-8 font-mono text-xs mt-4'>
           <div className='flex items-center gap-3 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled'>
             <div className='w-8 h-8 border border-hud-primary/50 relative flex items-center justify-center bg-hud-primary/10'>
               <div className='absolute inset-0 circuit-bg opacity-30'></div>
@@ -237,8 +218,6 @@ export function HeroSection() {
               </div>
             </div>
           </div>
-
-          {/* <WeatherWidget /> */}
           <WeatherHUD />
 
           <div className='flex items-center gap-3 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled'>
@@ -273,7 +252,7 @@ export function HeroSection() {
           </div>
         </h1>
         {/* Bio + GitHub Row */}
-        <div className='flex flex-col md:flex-row gap-6 mb-12'>
+        <div className='flex flex-col md:flex-row gap-6 mb-6'>
           <div className='hero-bio-container relative p-6 flex-1 bg-hud-surface/30 backdrop-blur-md border-l-4 border-hud-primary '>
             <div className='absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-hud-primary/30'></div>
             <div className='absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-hud-primary/30'></div>
@@ -376,7 +355,7 @@ export function HeroSection() {
           </div>
         </div>
 
-        <div className='flex flex-wrap gap-4 relative z-10 mb-12' >
+        <div className='flex flex-wrap gap-4 relative z-10 mb-12'>
           <a
             href='#projects'
             className='hero-cta relative overflow-hidden px-8 py-4 bg-hud-primary text-hud-bg font-heading font-bold tracking-widest hover:bg-hud-accent transition-colors clip-notched shadow-[0_0_15px_var(--hud-primary)] group'

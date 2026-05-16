@@ -12,6 +12,24 @@ const scanMessages = [
   'RETICULATING SPLINES...',
   'ACCESS GRANTED.',
 ];
+import {
+  BiCloud as Cloud,
+  BiCloudRain as CloudRain,
+  BiCloudSnow as CloudSnow,
+  BiSun as Sun,
+  BiCloudDrizzle as CloudDrizzle,
+  BiWind as Wind,
+} from 'react-icons/bi';
+
+const ICON_MAP: Record<string, React.ReactNode> = {
+  Clear: <Sun className='w-4 h-4' />,
+  Cloudy: <Cloud className='w-4 h-4' />,
+  Fog: <Wind className='w-4 h-4' />,
+  Drizzle: <CloudDrizzle className='w-4 h-4' />,
+  Rain: <CloudRain className='w-4 h-4' />,
+  Snow: <CloudSnow className='w-4 h-4' />,
+  Storm: <CloudRain className='w-4 h-4' />,
+};
 
 // The specific Biometric Glyph you provided, wrapped in a component
 const BiometricFaceGlyph = ({ className }: { className?: string }) => (
@@ -184,7 +202,6 @@ export const BiometricScanContainer = ({ paused }: { paused: boolean }) => {
 
 export const WeatherHUD = () => {
   const { weatherData, loading, error } = useWeather();
-
   if (loading) {
     return (
         <div className='flex items-center gap-4 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled flex-1 min-w-[250px]'>
@@ -218,24 +235,26 @@ export const WeatherHUD = () => {
   }
 
   return (
-    <div className="flex items-center gap-4 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled flex-1 min-w-[250px]">
-      {weatherData.map((data) =>
-      <div key={data.city} className="flex-1">
-          <div className="flex items-center justify-start gap-5 text-hud-text-muted mb-1 text-[10px]">
-            <span className="truncate">{data.city}</span>
-            <div className="flex items-center gap-1 text-hud-primary">
-              {data.icon}
+    <div className='flex items-center gap-4 p-2 border border-hud-border bg-hud-surface/50 backdrop-blur-sm clip-angled flex-1 min-w-[250px]'>
+      {weatherData.map((data) => (
+        <div key={data.city} className='flex-1'>
+          <div className='flex items-center justify-start gap-5 text-hud-text-muted mb-1 text-[10px]'>
+            <span className='truncate'>{data.city}</span>
+            <div className='flex items-center gap-1 text-hud-primary'>
+              {/* Look up the icon using the string from state */}
+              {ICON_MAP[data.condition] || <Cloud className='w-4 h-4' />}
             </div>
           </div>
-          <div className="flex items-baseline gap-1">
-            <span className="text-hud-primary font-bold text-sm">
+          <div className='flex items-baseline gap-1'>
+            <span className='text-hud-primary font-bold text-sm'>
               {data.temperature}°
             </span>
-            <span className="text-hud-text-muted text-[9px]">
+            <span className='text-hud-text-muted text-[9px]'>
               {data.condition}
             </span>
           </div>
         </div>
-      )}
-    </div>)
+      ))}
+    </div>
+  );
 };

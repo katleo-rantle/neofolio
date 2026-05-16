@@ -380,7 +380,6 @@ export function CommandTerminal({ isOpen, onClose }: CommandTerminalProps) {
   return (
     <div
       className='fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-8 bg-black/60 backdrop-blur-sm'
-      onClick={() => onClose()}
     >
       <div
         className='w-full max-w-4xl h-[80vh] flex flex-col bg-hud-surface border border-hud-primary shadow-[0_0_30px_var(--hud-glow)] clip-angled overflow-hidden'

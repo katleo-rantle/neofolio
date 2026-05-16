@@ -165,9 +165,9 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
                 assetIndex = (assetIndex + 1) % ASSETS.length;
                 setLoadingAsset(ASSETS[assetIndex]);
                 playTypingTick();
+                startAmbient();
               } else if (currentProgress === 100) {
                 setLoadingAsset('ALL SYSTEMS NOMINAL');
-                startAmbient();
               }
             }, 150);
           },

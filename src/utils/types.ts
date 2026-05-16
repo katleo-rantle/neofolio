@@ -1,8 +1,10 @@
+import { BiAward, BiGitBranch } from "react-icons/bi";
+import { BsCpu, BsHouse, BsLayers, BsNewspaper } from "react-icons/bs";
+
 export interface WeatherData {
   city: string;
   temperature: number;
   condition: string;
-  icon: React.ReactNode;
 }
 
 export interface CityConfig {
@@ -40,3 +42,37 @@ export interface NavigationProps {
   isInPortal?: boolean;
   onNavClick?: (sectionId: string) => void;
 }
+
+export const navItems = [
+  {
+    id: 'home',
+    label: 'HOME',
+    icon: BsHouse,
+  },
+  {
+    id: 'projects',
+    label: 'PROJECTS',
+    icon: BsLayers,
+  },
+  {
+    id: 'skills',
+    label: 'SKILLS',
+    icon: BsCpu,
+  },
+  {
+    id: 'certificates',
+    label: 'CERTIFICATES',
+    icon: BiAward,
+  },
+  {
+    id: 'algorithms',
+    label: 'ALGORITHMS',
+    icon: BiGitBranch,
+  },
+  {
+    id: 'blog',
+    label: 'BLOG',
+    icon: BsNewspaper,
+  },
+];
+

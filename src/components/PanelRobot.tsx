@@ -52,7 +52,7 @@ export function RobotChat() {
         </div>
         <div>
           <h3 className='font-heading font-bold text-hud-primary tracking-wider'>
-            A.L.E.X. BOT
+            K.A.T.L.E.O BOT
           </h3>
           <p className='text-xs font-mono text-hud-text-muted flex items-center gap-2'>
             <span
