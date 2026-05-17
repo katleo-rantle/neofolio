@@ -12,6 +12,20 @@ export const developerProfile = {
     twitter: 'https://twitter.com',
     email: 'kprantle@gmail.com',
   },
+  skills: [
+    'React / Next.js',
+    'TypeScript',
+    'Three.js / WebGL',
+    'CSS / Tailwind',
+    'Node.js',
+    'Python',
+    'PostgreSQL',
+    'GraphQL',
+    'Git / CI/CD',
+    'Docker',
+    'Figma',
+    'AWS',
+  ],
 };
 
 export const projects = [

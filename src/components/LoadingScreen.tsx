@@ -165,7 +165,13 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
                 assetIndex = (assetIndex + 1) % ASSETS.length;
                 setLoadingAsset(ASSETS[assetIndex]);
                 playTypingTick();
-                startAmbient();
+                if (isSoundEnabled) {
+                  console.log(
+                    'Starting ambient sound from loading screen...',
+                    enableSound,
+                  );
+                  startAmbient();
+                }
               } else if (currentProgress === 100) {
                 setLoadingAsset('ALL SYSTEMS NOMINAL');
               }

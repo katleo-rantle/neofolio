@@ -407,4 +407,36 @@ body.matrix-mode * {
   animation: data-ticker 20s linear infinite;
 }
 
+/* styles/hud-animations.css */
 
+@keyframes shimmer {
+  100% { 
+    transform: translateX(100%); 
+  }
+}
+
+@keyframes syncFilterGlow {
+  0%, 24.9% { filter: drop-shadow(0 0 0px transparent); }
+  25%, 49.9% { filter: drop-shadow(0 0 10px var(--hud-primary)); }
+  50%, 74.9% { filter: drop-shadow(0 0 0px transparent); }
+  75%, 99.9% { filter: drop-shadow(0 0 10px var(--hud-primary)); }
+  100% { filter: drop-shadow(0 0 0px transparent); }
+}
+
+@keyframes bulletIconGlow {
+  0%, 24.9% { filter: drop-shadow(0 0 0px transparent); transform: scale(1); }
+  25%, 49.9% { filter: drop-shadow(0 0 12px var(--hud-primary)); transform: scale(1.08); }
+  50%, 74.9% { filter: drop-shadow(0 0 0px transparent); transform: scale(1); }
+  75%, 99.9% { filter: drop-shadow(0 0 12px var(--hud-primary)); transform: scale(1.08); }
+  100% { filter: drop-shadow(0 0 0px transparent); transform: scale(1); }
+}
+
+.animate-sync-pulse .compliance-target li,
+.animate-sync-pulse .compliance-target div {
+  animation: syncFilterGlow 2.0s linear forwards;
+}
+
+.animate-sync-pulse .node-icon,
+.animate-sync-pulse .node-bullet {
+  animation: bulletIconGlow 2.0s linear forwards;
+}
